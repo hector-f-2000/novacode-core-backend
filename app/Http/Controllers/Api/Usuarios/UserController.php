@@ -28,6 +28,13 @@ class UserController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        if (!$request->user()->can('user_view')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
         // Cargamos la relación 'profile' de antemano para optimizar la base de datos
         $users = User::with(['role', 'profile'])->get();
         $data = $users->map(function ($user) {
@@ -58,6 +65,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$request->user()->can('user_create')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         // 1. Validación Elite: validando existencia real de la FK en la tabla 'roles'
         $validated = $request->validate([
             'username'  => 'required|string|max:50|unique:users,username',
@@ -90,6 +105,10 @@ class UserController extends Controller
                 'address'   => $validated['address'],
             ]);
 
+            // 4. Asignar rol de Spatie (model_has_roles) para que isRequiredForStaff() funcione
+            $role = Role::find($validated['role_id']);
+            $user->assignRole($role);
+
             DB::commit();
 
             return response()->json([
@@ -112,6 +131,14 @@ class UserController extends Controller
 
     public function update(Request $request, int $id)
     {
+        if (!$request->user()->can('user_edit')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         $user = User::findOrFail($id);
 
         // 2. Validación Senior conservando unicidad del ID actual y foránea del rol
@@ -151,6 +178,18 @@ class UserController extends Controller
                 ]
             );
 
+            // 5. Sincronizar rol de Spatie (model_has_roles) con role_id
+            $role = Role::find($validated['role_id']);
+            $user->syncRoles([$role]);
+
+            // 6. Revocar tokens Sanctum para forzar re-login (verifica 2FA según nuevo rol)
+            if ((int) $request->user()->id === (int) $user->id) {
+                $currentTokenId = $request->user()->currentAccessToken()->id;
+                $user->tokens()->where('id', '!=', $currentTokenId)->delete();
+            } else {
+                $user->tokens()->delete();
+            }
+
             DB::commit();
 
             return response()->json([
@@ -172,6 +211,14 @@ class UserController extends Controller
     }
 
     public function toggleStatus(int $id){
+        if (!request()->user()->can('user_edit')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         try {
             $user = User::findOrFail($id);
             $user->status = !$user->status; // Invierte el estado actual
@@ -189,6 +236,14 @@ class UserController extends Controller
     }
 
     public function getRolesQuery(){
+        if (!request()->user()->can('role_view')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         try {
             // Traemos solo los campos necesarios de forma eficiente
             $roles = DB::table('roles')
@@ -204,6 +259,14 @@ class UserController extends Controller
 
     public function getUserPermissions(int $id): JsonResponse
     {
+        if (!request()->user()->can('role_view')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         try {
             $data = $this->userPermissionService->getUserPermissions($id);
 
@@ -222,6 +285,14 @@ class UserController extends Controller
 
     public function syncUserPermissions(SyncUserPermissionsRequest $request, int $id): JsonResponse
     {
+        if (!$request->user()->can('role_manage')) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autorizado.',
+                'data'    => null,
+            ], 403);
+        }
+
         try {
             $dto = SyncUserPermissionsDTO::fromRequest($request->validated(), $id);
             $user = $this->userPermissionService->syncPermissions($dto);

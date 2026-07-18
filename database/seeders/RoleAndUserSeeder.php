@@ -21,7 +21,7 @@ class RoleAndUserSeeder extends Seeder
             // 1. Crear el usuario principal (Seguridad)
             $user = User::create([
                 'username' => 'admin',
-                'email'    => 'admin@novacode.cl',
+                'email'    => 'admin@novacodelabs.cl',
                 'password' => Hash::make('admin123'),
                 'role_id'  => 1,
                 'status'   => true, // Usuario activo por defecto
@@ -40,6 +40,9 @@ class RoleAndUserSeeder extends Seeder
                     'language' => 'es'
                 ],
             ]);
+
+            // 3. Asignar role via Spatie (model_has_roles) para permitir $user->can()
+            $user->assignRole('super_admin');
             
         });
     }

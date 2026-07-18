@@ -1,0 +1,11 @@
+{
+    "schema_version": 2,
+    "commit": "3f41798e39ead8dcdbe7d0339c3f24a2ca71b6d6",
+    "indexed_at": "2026-07-13T00:08:28Z",
+    "project": "novacode-core-backend",
+    "nodes": 1017,
+    "edges": 1632,
+    "original_size": 2686976,
+    "compressed_size": 411068,
+    "compression_level": 9
+}

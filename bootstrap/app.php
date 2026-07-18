@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -12,10 +14,25 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->api(prepend: [
+            \App\Http\Middleware\ForceJsonResponse::class,
+        ]);
+
         $middleware->api(append: [
             \App\Http\Middleware\ValidateNotRevokedToken::class,
         ]);
+
+        $middleware->alias([
+            'tenant.handshake' => \App\Http\Middleware\TenantHandshakeMiddleware::class,
+            'permission'       => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (AuthenticationException $e, Request $request) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'No autenticado.',
+                'data'    => null,
+            ], 401);
+        });
     })->create();

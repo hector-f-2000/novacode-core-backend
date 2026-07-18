@@ -20,13 +20,14 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // 2. Definir Permisos Estándar
         $permissions = [
-            ['name' => 'user_view',     'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'user_create',   'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'user_edit',     'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'user_delete',   'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'role_view',     'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'role_manage',   'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'settings_view', 'guard_name' => 'api', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'user_view',     'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'user_create',   'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'user_edit',     'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'user_delete',   'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'role_view',     'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'role_manage',   'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'settings_view', 'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'tenant_owner_create', 'guard_name' => 'sanctum', 'created_at' => $now, 'updated_at' => $now],
         ];
 
         DB::table('permissions')->insert($permissions);
@@ -37,28 +38,28 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'name' => 'super_admin', 
                 'display_name' => 'Súper Admin', 
-                'guard_name' => 'api', 
+                'guard_name' => 'sanctum', 
                 'created_at' => $now, 
                 'updated_at' => $now
             ],
             [
                 'name' => 'admin',       
                 'display_name' => 'Administrador',       
-                'guard_name' => 'api', 
+                'guard_name' => 'sanctum', 
                 'created_at' => $now, 
                 'updated_at' => $now
             ],
             [
                 'name' => 'editor',      
                 'display_name' => 'Editor', 
-                'guard_name' => 'api', 
+                'guard_name' => 'sanctum', 
                 'created_at' => $now, 
                 'updated_at' => $now
             ],
             [
                 'name' => 'viewer',      
                 'display_name' => 'Solo Lectura',        
-                'guard_name' => 'api', 
+                'guard_name' => 'sanctum', 
                 'created_at' => $now, 
                 'updated_at' => $now
             ],

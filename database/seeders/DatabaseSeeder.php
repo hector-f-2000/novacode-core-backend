@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleAndUserSeeder::class);
         $this->call(SystemParametersSeeder::class);
         $this->call(SecurityAuditLogsSeeder::class);
+
+        $this->call(TenantUserSeeder::class);
     }
 }
