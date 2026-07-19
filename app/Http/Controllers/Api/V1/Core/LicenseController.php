@@ -20,7 +20,7 @@ class LicenseController extends Controller
         try {
             $dto = CheckLimitsDTO::fromArray([
                 'tenant_slug' => $request->header('X-Tenant-Slug'),
-                'app_slug' => $request->header('X-App-Identifier'),
+                'app_slug' => $request->attributes->get('current_app_slug'),
                 'current_users_count' => $request->input('current_users_count', 0)
             ]);
 

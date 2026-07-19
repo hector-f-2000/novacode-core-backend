@@ -95,6 +95,7 @@ class TenantHandshakeMiddleware
         ])));
 
         $request->attributes->set('current_tenant', $tenantData);
+        $request->attributes->set('current_app_slug', $appSlug);
 
         return $next($request);
     }

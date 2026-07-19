@@ -259,7 +259,7 @@ Esto asegura que:
 **Objetivo:** una vez aprobadas todas las etapas anteriores, documentar el diseño final.
 
 - Actualizar `.instructions/00_roadmap_asist_go.md` en la sección de seguridad, igual como se hizo con el estándar de respuesta del Core (`data.allowed`, `data.reason`, etc.).
-- Crear un archivo nuevo `.instructions/15_security_lockout_2fa.md` con el diseño final aprobado, para que cualquier agente futuro lo lea antes de tocar este módulo.
+- Crear un archivo nuevo `.instructions/18_security_lockout_2fa.md` con el diseño final aprobado, para que cualquier agente futuro lo lea antes de tocar este módulo.
 
 Recién **después** de esta etapa se pasa a la implementación real (código), en una fase separada y explícitamente autorizada por Héctor.
 

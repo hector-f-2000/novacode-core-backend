@@ -82,6 +82,17 @@ Se descubrió que el proyecto no tenía `lang/es/validation.php` — los mensaje
 ### 14. Lección de proceso: aislar variables al probar (tarea 3.2, check-revocation)
 Durante la verificación de `checkRevocation()`, un primer resultado pareció indicar que `valid` dependía del estado del tenant (`valid: false` al suspender), lo cual habría sido un bug — pero el código nunca relacionó ambos campos. Al repetir la prueba con un `jti` limpio (sin `revoked_at` previo de una prueba anterior), se confirmó el comportamiento correcto: `valid` y `tenant_active` son independientes. Causa del resultado engañoso: el `jti` reusado en la primera prueba ya venía revocado de un test anterior. Lección para futuras pruebas: siempre generar un `jti`/token nuevo y confirmar su estado inicial (`revoked_at IS NULL`) antes de cambiar la variable que se quiere aislar, en vez de reusar estado de una prueba previa.
 
+### 15. Archivos de `.instructions/` con información desactualizada (ex-rescatados del .gitignore)
+
+1. **`02_clean_architecture_tenants.md`** — referencia PHP 7.4; el proyecto usa `^8.3`.
+2. **`03_http_routes_and_controllers.md`** — está vacío.
+3. **`09_refactor_middleware_and_usecase.md`** — referencia `VerifyCorporateHandshake.php`; el archivo real es `TenantHandshakeMiddleware.php`.
+4. **`11_integrate_audit_middleware.md`** — misma referencia obsoleta a `VerifyCorporateHandshake.php`.
+
+Son archivos que quedaron sin migrar tras refactors y cambios de nombre. No bloquean nada hoy, pero actualizar o archivar cuando se retome trabajo relacionado a esas áreas.
+
+---
+
 ## ✅ Próximos pasos recomendados (en orden sugerido)
 
 1. Resolver el punto de deuda técnica #1 (`event_type` a `string`) — es más barato hacerlo antes de que el plan de lockout/2FA agregue más eventos sobre el constraint actual.

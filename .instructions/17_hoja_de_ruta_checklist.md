@@ -23,7 +23,7 @@
 - [x] **2.4 — Etapa 4: Plan de pruebas y casos borde**
       Documentado en `14_plan_lockout_2fa.md` sección Etapa 4. 21 casos verificados manualmente + 5 casos borde cubiertos (revocación de tokens, OTP multi-dispositivo, lockout vs resend-otp, orden de validaciones).
 - [x] **2.5 — Etapa 5: Documentación final**
-      `15_security_lockout_2fa.md` creado con el diseño final aprobado. Checklist actualizado.
+      `18_security_lockout_2fa.md` creado con el diseño final aprobado. Checklist actualizado.
 
 ---
 
@@ -32,8 +32,8 @@
 - [x] **3.1 — Diseño detallado del token delegado**
       Estructura de claims, algoritmo (RS256/EdDSA ya decidido), vida útil, mecanismo de revocación, almacenamiento de claves (privada en el Core, pública distribuida a satélites).
 - [x] **3.2 — Implementación de la emisión del token** (lado Core)
-- [ ] **3.3 — Implementación de la verificación del token** (lado satélite — cuando corresponda, fuera del alcance del Core puro)
-- [ ] **3.4 — Pruebas de expiración, revocación y suspensión de plan a mitad de sesión**
+- [x] **3.3 — Implementación de la verificación del token** (lado satélite — cuando corresponda, fuera del alcance del Core puro)
+- [x] **3.4 — Pruebas de expiración, revocación y suspensión de plan a mitad de sesión**
 
 ---
 

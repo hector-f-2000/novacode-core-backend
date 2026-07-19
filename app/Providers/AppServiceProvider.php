@@ -30,5 +30,18 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        $privateKey = config('sso.private_key');
+        if ($privateKey !== '' && $privateKey !== null) {
+            $decoded = base64_decode($privateKey, true);
+            if ($decoded === false || strlen($decoded) !== SODIUM_CRYPTO_SIGN_SECRETKEYBYTES) {
+                throw new \RuntimeException(
+                    'SSO_PRIVATE_KEY inválida: se esperaban ' . SODIUM_CRYPTO_SIGN_SECRETKEYBYTES
+                    . ' bytes decodificados, se encontraron '
+                    . ($decoded === false ? 0 : strlen($decoded))
+                    . '. Verifica que la variable en .env no tenga espacios, saltos de línea, ni esté truncada.'
+                );
+            }
+        }
     }
 }
