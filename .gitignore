@@ -26,3 +26,5 @@ Thumbs.db
 
 #archivos de contexto
 *.md
+# pero los documentos de diseno en .instructions/ si se versionan
+!.instructions/*.md
