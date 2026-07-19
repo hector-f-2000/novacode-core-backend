@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\Core\LicenseController;
 use App\Http\Controllers\Api\V1\Core\CatalogController;
 use App\Http\Controllers\Core\Auth\TenantAuthController;
 use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\Sso\SsoController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,15 @@ use App\Http\Controllers\Api\Auth\OtpController;
 
 // Endpoint para el inicio de sesión
 Route::post('/login', [AuthController::class, 'login']);
+
+// Clave pública SSO para verificación de tokens delegados (sin autenticación)
+Route::get('/.well-known/sso-public-key', function () {
+    $pem = config('sso.public_key_pem');
+    if (!$pem) {
+        return response()->json(['status' => false, 'message' => 'Clave pública no configurada.'], 503);
+    }
+    return response($pem, 200, ['Content-Type' => 'application/x-pem-file']);
+});
 
 /**
  * NovaCode Labs - Core Master API v1
@@ -59,6 +69,19 @@ Route::prefix('v1')->group(function () {
         Route::post('tenant/auth/logout', [TenantAuthController::class, 'logout']);
         Route::get('tenant/auth/me', [TenantAuthController::class, 'me']);
     });
+
+    // 🔐 SSO Delegado — Emisión de token (protegido por auth:tenant)
+    Route::middleware('auth:tenant')->group(function () {
+        Route::post('sso/delegate-token', [SsoController::class, 'delegateToken'])
+            ->middleware('throttle:10,1');
+    });
+
+    // 🔐 SSO Delegado — Verificación en vivo (protegido por handshake perimetral)
+    // {app_slug} identifica qué satélite llama, se valida contra $delegate->app_slug
+    // La validación de X-Tenant-Slug / X-Tenant-Token se hace inline en el controlador
+    // porque el middleware tenant.handshake requiere un app_slug fijo en tiempo de definición.
+    Route::get('sso/{app_slug}/check-revocation', [SsoController::class, 'checkRevocation'])
+        ->middleware('throttle:60,1');
 
     // Contexto: Core Business Management
     Route::prefix('core')->group(function () {

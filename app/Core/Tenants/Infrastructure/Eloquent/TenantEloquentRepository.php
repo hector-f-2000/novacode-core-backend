@@ -81,7 +81,8 @@ class TenantEloquentRepository implements TenantRepositoryInterface
             'razon_social' => $tenant->razon_social,
             'tenant_status' => $tenant->tenant_status,
             'expires_at'   => $tenant->expires_at,
-            'app_status'   => $tenant->app_status,
+            'app_status'     => $tenant->app_status,
+            'sso_public_key' => config('sso.public_key_pem'),
         ];
     }
 }
